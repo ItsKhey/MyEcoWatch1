@@ -1,0 +1,40 @@
+<resources>
+    <string name="app_name">MyEcoWatch1</string>
+    <string name="nav_home">Home</string>
+    <string name="nav_reports">Reports</string>
+    <string name="nav_alerts">Alerts</string>
+    <string name="nav_profile">Profile</string>
+
+    <!-- Dashboard -->
+    <string name="dashboard_title">Dashboard</string>
+    <string name="dashboard_subtitle">Help keep your community clean and healthy!</string>
+
+    <!-- Announcements -->
+    <string name="announcements">Announcements</string>
+    <string name="announcement_none_yet">No announcements yet.</string>
+    <string name="announcement_untitled">Untitled announcement</string>
+    <string name="announcement_no_body">No further details were provided.</string>
+    <string name="announcement_view_all">View all →</string>
+
+    <!-- Report details dialog -->
+    <string name="report_detail_assignment_pending">A cleanup crew has been assigned to your report.</string>
+    <string name="report_detail_assignment_done">The cleanup crew has finished this report.</string>
+    <!-- %1$s is an already-formatted date and time, e.g. "October 09, 2026 at 03:15 PM" -->
+    <string name="report_detail_assigned_on">Assigned on %1$s</string>
+    <string name="report_detail_completed_on">Cleanup completed on %1$s</string>
+
+    <!-- Waste scale -->
+    <!-- The label that decides how much has to be sent: one cleaner for a small
+         job, a cleaning team for a medium one, a team with a truck for a large
+         one. -->
+    <string name="waste_scale_label">Waste Scale</string>
+    <string name="waste_scale_small">Small-Scale Waste</string>
+    <string name="waste_scale_medium">Medium-Scale Waste</string>
+    <string name="waste_scale_large">Large-Scale Waste</string>
+    <string name="waste_scale_locked_hint">The size cannot be changed once a cleanup crew has been assigned.</string>
+    <string name="report_detail_waste_scale">Waste Scale</string>
+
+    <!-- The crew and the truck that were dispatched for the report. -->
+    <string name="assigned_team_label">Assigned Team</string>
+    <string name="assigned_vehicle_label">Assigned Vehicle</string>
+</resources>

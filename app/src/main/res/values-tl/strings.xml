@@ -1,0 +1,29 @@
+<resources>
+    <string name="app_name">MyEcoWatch1</string>
+    <string name="nav_home">Home</string>
+    <string name="nav_reports">Mga Ulat</string>
+    <string name="nav_alerts">Mga Alerto</string>
+    <string name="nav_profile">Profile</string>
+
+    <!-- Report details dialog -->
+    <string name="report_detail_assignment_pending">May itinalaga na ang isang crew ng linis sa iyong ulat.</string>
+    <string name="report_detail_assignment_done">Tapos na ng crew ng linis ang ulat na ito.</string>
+    <!-- %1$s is an already-formatted date and time, e.g. "October 09, 2026 at 03:15 PM" -->
+    <string name="report_detail_assigned_on">Itinalaga noong %1$s</string>
+    <string name="report_detail_completed_on">Tapos ang paglilinis noong %1$s</string>
+
+    <!-- Waste scale -->
+    <!-- Ang label na ito ang nagpapasyon kung gaano kalaki ang ipinadala: isang
+         linis para sa maliit, isang team para sa katamtaman, at isang team na may
+         sasakyan para sa malaki. -->
+    <string name="waste_scale_label">Laki ng Basura</string>
+    <string name="waste_scale_small">Maliitang Kalakip na Basura</string>
+    <string name="waste_scale_medium">Katamtamang Kalakip na Basura</string>
+    <string name="waste_scale_large">Malaking Kalakip na Basura</string>
+    <string name="waste_scale_locked_hint">Hindi na maaaring baguhin ang laki kapag mayroon nang itinalagang pangkat ng linis.</string>
+    <string name="report_detail_waste_scale">Laki ng Basura</string>
+
+    <!-- Ang team at ang sasakyan na ipinadala para sa ulat. -->
+    <string name="assigned_team_label">Itinalagang Team</string>
+    <string name="assigned_vehicle_label">Itinalagang Sasakyan</string>
+</resources>
