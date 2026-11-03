@@ -12,7 +12,7 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
-import com.example.myecowatch1.R;
+import com.example.myecowatch1.core.R;
 import com.example.myecowatch1.data.models.Announcement;
 import com.example.myecowatch1.data.models.Report;
 import com.example.myecowatch1.data.repository.AnnouncementRepository;

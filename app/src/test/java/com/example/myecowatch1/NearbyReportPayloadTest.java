@@ -91,11 +91,11 @@ public class NearbyReportPayloadTest {
     }
 
     /**
-     * The cluster row is never advanced to a terminal state, so a spot whose
-     * last report was completed can still come back as a nearby hand-off. With
-     * nothing outstanding behind it, the sheet would read "A Report Is Already
-     * Near Here / Existing Reports 0" and ask the resident to decide about
-     * nothing, so the hand-off has to be dismissed instead.
+     * A hand-off can still arrive with nothing open behind it, for example from
+     * a server that predates the open-status scan or a cluster whose last report
+     * was closed between the scan and the response. The sheet would read "A
+     * Report Is Already Near Here / Existing Reports 0" and ask the resident to
+     * decide about nothing, so it has to be dismissed instead.
      */
     @Test
     public void aHandOffWithNothingOutstandingIsNotWorthShowing() {
@@ -136,5 +136,47 @@ public class NearbyReportPayloadTest {
         assertTrue(NearbyReportPayload.hasOutstandingReports(new HashMap<>()));
         assertTrue(NearbyReportPayload.hasOutstandingReports(
                 NearbyReportPayload.decode(NearbyReportPayload.PREFIX + "{\"reportCount\":\"x\"}")));
+    }
+
+    /**
+     * The regression this guards: the cluster row never advances past Pending,
+     * so an open spot used to be announced as "Pending" even when its reports
+     * were further along. The report-derived status must win.
+     */
+    @Test
+    public void theReportStatusOutranksTheLegacyClusterStatus() {
+        Map<String, Object> nearby = new HashMap<>();
+        nearby.put("clusterStatus", "Pending");
+        nearby.put("reportStatus", "Completed");
+
+        assertEquals("Completed", NearbyReportPayload.displayStatus(nearby));
+    }
+
+    /** An older server sends only clusterStatus, which must still be readable. */
+    @Test
+    public void aMissingReportStatusFallsBackToTheClusterStatus() {
+        Map<String, Object> nearby = new HashMap<>();
+        nearby.put("clusterStatus", "In Progress");
+
+        assertEquals("In Progress", NearbyReportPayload.displayStatus(nearby));
+    }
+
+    /** Blank values must not win over a usable sibling field. */
+    @Test
+    public void aBlankReportStatusIsIgnored() {
+        Map<String, Object> nearby = new HashMap<>();
+        nearby.put("reportStatus", "   ");
+        nearby.put("clusterStatus", "Under Review");
+
+        assertEquals("Under Review", NearbyReportPayload.displayStatus(nearby));
+    }
+
+    /** The sheet always needs a label, even from an unusable payload. */
+    @Test
+    public void aStatuslessPayloadReadsAsUnknown() {
+        assertEquals("Unknown", NearbyReportPayload.displayStatus(null));
+        assertEquals("Unknown", NearbyReportPayload.displayStatus(new HashMap<>()));
+        assertEquals("Unknown", NearbyReportPayload.displayStatus(
+                NearbyReportPayload.decode(NearbyReportPayload.PREFIX + "{}")));
     }
 }

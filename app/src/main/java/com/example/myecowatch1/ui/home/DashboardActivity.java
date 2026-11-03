@@ -22,11 +22,13 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.bumptech.glide.Glide;
-import com.example.myecowatch1.R;
+import com.example.myecowatch1.core.R;
 import com.example.myecowatch1.data.models.User;
 import com.example.myecowatch1.data.remote.ServerConfig;
 import com.example.myecowatch1.data.repository.AnnouncementRepository;
 import com.example.myecowatch1.data.repository.AuthRepository;
+import com.example.myecowatch1.navigation.DashboardNavigation;
+import com.example.myecowatch1.navigation.NotificationRouting;
 import com.example.myecowatch1.ui.alerts.AnnouncementsFragment;
 import com.example.myecowatch1.ui.alerts.NotificationsFragment;
 import com.example.myecowatch1.ui.auth.LoginActivity;
@@ -36,21 +38,23 @@ import com.example.myecowatch1.ui.reports.ReportsFragment;
 import com.example.myecowatch1.utils.LocaleHelper;
 import com.example.myecowatch1.utils.SessionManager;
 
-public class DashboardActivity extends AppCompatActivity {
+public class DashboardActivity extends AppCompatActivity implements DashboardNavigation {
     public static final String ACTION_OPEN_NOTIFICATION =
-            "com.example.myecowatch1.action.OPEN_NOTIFICATION";
-    public static final String EXTRA_NOTIFICATION_ID = "notification_id";
-    public static final String EXTRA_REPORT_ID = "report_id";
+            NotificationRouting.ACTION_OPEN_NOTIFICATION;
+    public static final String EXTRA_NOTIFICATION_ID =
+            NotificationRouting.EXTRA_NOTIFICATION_ID;
+    public static final String EXTRA_REPORT_ID = NotificationRouting.EXTRA_REPORT_ID;
 
     /**
      * Payload value that sends a tapped notification to the Announcements screen.
      * Sent by the backend alongside ANNOUNCEMENT broadcasts, which own no
      * report and so cannot be routed by report id.
      */
-    public static final String TARGET_SCREEN_ANNOUNCEMENTS = "ANNOUNCEMENTS";
+    public static final String TARGET_SCREEN_ANNOUNCEMENTS =
+            NotificationRouting.TARGET_SCREEN_ANNOUNCEMENTS;
 
     /** Intent extra carrying {@link #TARGET_SCREEN_ANNOUNCEMENTS}. */
-    public static final String EXTRA_TARGET_SCREEN = "targetScreen";
+    public static final String EXTRA_TARGET_SCREEN = NotificationRouting.EXTRA_TARGET_SCREEN;
 
     private LinearLayout itemHome, itemInbox, itemCreate, itemNotifications, itemProfile;
     private ImageView iconHome, iconInbox, iconCreate, iconNotifications, iconProfile, pfpImage, backgroundImage;

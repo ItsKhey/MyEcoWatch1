@@ -28,7 +28,7 @@
         android:theme="@style/Theme.MyEcoWatch1">
 
         <activity
-            android:name=".ui.auth.LoginActivity"
+            android:name="com.example.myecowatch1.ui.auth.LoginActivity"
             android:exported="true"
             android:windowSoftInputMode="adjustResize">
             <intent-filter>
@@ -38,7 +38,7 @@
         </activity>
 
         <activity
-            android:name=".ui.auth.RegisterActivity"
+            android:name="com.example.myecowatch1.ui.auth.RegisterActivity"
             android:exported="false"
             android:windowSoftInputMode="adjustResize" />
 
@@ -47,6 +47,13 @@
             password reset continue at the same https path, because that is the one
             continue URL the backend hands Firebase; the mode query parameter tells
             this activity which screen to open.
+
+            Two paths are claimed because Firebase emails a redirector rather than
+            the action itself: the email points at /__/auth/links, whose "link"
+            parameter carries the /__/auth/action URL that actually holds mode and
+            oobCode. Claiming only /finishSignUp leaves the email to the browser,
+            which completes the action on Firebase's hosted page and then redirects
+            here with no parameters at all.
 
             autoVerify only succeeds once this app's signing certificate SHA-256 is
             registered in the Firebase console, because that is what Firebase
@@ -59,7 +66,7 @@
             the flow works even with no Hosting site and no registered SHA.
         -->
         <activity
-            android:name=".ui.auth.EmailActionActivity"
+            android:name="com.example.myecowatch1.ui.auth.EmailActionActivity"
             android:excludeFromRecents="true"
             android:exported="true"
             android:launchMode="singleTop"
@@ -75,6 +82,11 @@
                     android:host="ecowatch1-4445f.firebaseapp.com"
                     android:pathPrefix="/finishSignUp"
                     android:scheme="https" />
+
+                <data
+                    android:host="ecowatch1-4445f.firebaseapp.com"
+                    android:pathPrefix="/__/auth/"
+                    android:scheme="https" />
             </intent-filter>
         </activity>
 
@@ -89,7 +101,7 @@
             backend, never by this activity.
         -->
         <activity
-            android:name=".ui.auth.ResetPasswordActivity"
+            android:name="com.example.myecowatch1.ui.auth.ResetPasswordActivity"
             android:exported="true"
             android:launchMode="singleTop"
             android:windowSoftInputMode="adjustResize">
@@ -111,7 +123,7 @@
             have to hunt for the app manually.
         -->
         <activity
-            android:name=".ui.auth.EmailVerificationActivity"
+            android:name="com.example.myecowatch1.ui.auth.EmailVerificationActivity"
             android:exported="true"
             android:launchMode="singleTop"
             android:windowSoftInputMode="adjustResize">
@@ -144,7 +156,7 @@
             android:theme="@style/UCropTheme" />
 
         <service
-            android:name=".notifications.EcoWatchFirebaseMessagingService"
+            android:name="com.example.myecowatch1.notifications.EcoWatchFirebaseMessagingService"
             android:exported="false">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
