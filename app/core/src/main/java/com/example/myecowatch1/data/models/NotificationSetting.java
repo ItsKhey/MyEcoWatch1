@@ -13,7 +13,6 @@ public class NotificationSetting {
     private boolean reportStatusUpdates = true;
     private boolean reportCompleted = true;
     private boolean reportDenied = true;
-    private boolean cenroAnnouncements = true;
     private boolean securityAlerts = true;
     private boolean soundEnabled = true;
     private String soundUri = ""; // Path to custom sound
@@ -39,9 +38,6 @@ public class NotificationSetting {
 
     public boolean isReportDenied() { return reportDenied; }
     public void setReportDenied(boolean reportDenied) { this.reportDenied = reportDenied; }
-
-    public boolean isCenroAnnouncements() { return cenroAnnouncements; }
-    public void setCenroAnnouncements(boolean cenroAnnouncements) { this.cenroAnnouncements = cenroAnnouncements; }
 
     public boolean isSecurityAlerts() { return securityAlerts; }
     public void setSecurityAlerts(boolean securityAlerts) { this.securityAlerts = securityAlerts; }

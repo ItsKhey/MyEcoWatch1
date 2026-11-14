@@ -12,7 +12,6 @@ import androidx.room.TypeConverters;
 import androidx.room.migration.Migration;
 import androidx.sqlite.db.SupportSQLiteDatabase;
 
-import com.example.myecowatch1.data.models.Announcement;
 import com.example.myecowatch1.data.models.Report;
 import com.example.myecowatch1.data.models.User;
 import com.example.myecowatch1.data.models.History;
@@ -30,10 +29,9 @@ import com.example.myecowatch1.data.models.NotificationSetting;
                 HistoryTombstone.class,
                 Notification.class,
                 BiometricSetting.class,
-                NotificationSetting.class,
-                Announcement.class
+                NotificationSetting.class
         },
-        version = 30,
+        version = 31,
         exportSchema = false
 )
 public abstract class AppDatabase extends RoomDatabase {
@@ -84,34 +82,6 @@ public abstract class AppDatabase extends RoomDatabase {
             database.execSQL(
                     "CREATE INDEX IF NOT EXISTS index_history_tombstones_residentId "
                             + "ON history_tombstones(residentId)"
-            );
-        }
-    };
-
-    /**
-     * Adds the resident announcement feed. Existing report, history and
-     * notification data is preserved, and the unique index on announcementId
-     * makes a re-sync replace a row instead of duplicating it.
-     */
-    private static final Migration MIGRATION_21_22 = new Migration(21, 22) {
-        @Override
-        public void migrate(@NonNull SupportSQLiteDatabase database) {
-            database.execSQL(
-                    "CREATE TABLE IF NOT EXISTS `announcements` ("
-                            + "`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, "
-                            + "`announcementId` TEXT, "
-                            + "`title` TEXT, "
-                            + "`message` TEXT, "
-                            + "`audience` TEXT, "
-                            + "`barangay` TEXT, "
-                            + "`targetResidentIds` TEXT, "
-                            + "`priority` TEXT, "
-                            + "`createdByAdminId` TEXT, "
-                            + "`createdAt` TEXT)"
-            );
-            database.execSQL(
-                    "CREATE UNIQUE INDEX IF NOT EXISTS index_announcements_announcementId "
-                            + "ON announcements(announcementId)"
             );
         }
     };
@@ -269,7 +239,6 @@ public abstract class AppDatabase extends RoomDatabase {
     }
 
     public abstract UserDao userDao();
-    public abstract AnnouncementDao announcementDao();
     public abstract ReportDao reportDao();
     public abstract HistoryDao historyDao();
     public abstract HistoryTombstoneDao historyTombstoneDao();
@@ -289,7 +258,6 @@ public abstract class AppDatabase extends RoomDatabase {
                             .addMigrations(
                                     MIGRATION_19_20,
                                     MIGRATION_20_21,
-                                    MIGRATION_21_22,
                                     MIGRATION_22_23,
                                     MIGRATION_23_24,
                                     MIGRATION_24_25,

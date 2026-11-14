@@ -17,30 +17,21 @@ public final class NotificationRouting {
             "com.example.myecowatch1.action.OPEN_NOTIFICATION";
     public static final String EXTRA_NOTIFICATION_ID = "notification_id";
     public static final String EXTRA_REPORT_ID = "report_id";
-    public static final String EXTRA_TARGET_SCREEN = "targetScreen";
-    public static final String TARGET_SCREEN_ANNOUNCEMENTS = "ANNOUNCEMENTS";
 
     private NotificationRouting() {
     }
 
-    /**
-     * @param announcement when true the dashboard opens the announcement feed
-     *                     instead of trying to resolve a report id
-     */
+    /** Builds the launch intent for a tapped system notification. */
     public static Intent openNotification(
             Context context,
             String notificationId,
-            String reportId,
-            boolean announcement
+            String reportId
     ) {
         Intent intent = new Intent();
         intent.setClassName(context.getPackageName(), AppNavigation.DASHBOARD_ACTIVITY);
         intent.setAction(ACTION_OPEN_NOTIFICATION);
         intent.putExtra(EXTRA_NOTIFICATION_ID, notificationId);
         intent.putExtra(EXTRA_REPORT_ID, reportId);
-        if (announcement) {
-            intent.putExtra(EXTRA_TARGET_SCREEN, TARGET_SCREEN_ANNOUNCEMENTS);
-        }
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
         return intent;
     }

@@ -23,9 +23,6 @@ public class NotificationPreferences {
     @SerializedName("reportDenied")
     private boolean reportDenied = true;
 
-    @SerializedName("cenroAnnouncements")
-    private boolean cenroAnnouncements = true;
-
     @SerializedName("securityAlerts")
     private boolean securityAlerts = true;
 
@@ -55,9 +52,6 @@ public class NotificationPreferences {
 
     public boolean isReportDenied() { return reportDenied; }
     public void setReportDenied(boolean value) { this.reportDenied = value; }
-
-    public boolean isCenroAnnouncements() { return cenroAnnouncements; }
-    public void setCenroAnnouncements(boolean value) { this.cenroAnnouncements = value; }
 
     public boolean isSecurityAlerts() { return securityAlerts; }
     public void setSecurityAlerts(boolean value) { this.securityAlerts = value; }

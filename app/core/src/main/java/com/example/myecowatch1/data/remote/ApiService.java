@@ -164,16 +164,6 @@ public interface ApiService {
     @POST("reports/bulk-delete")
     Call<Map<String, Object>> bulkDelete(@Body Map<String, List<String>> body);
 
-    /**
-     * Announcements addressed to the signed-in resident. The audience is
-     * resolved by the backend, so the client never decides who may read what.
-     *
-     * <p>Returns the backend's wrapper object rather than a bare list, matching
-     * {@link AnnouncementFeedResponse}.
-     */
-    @GET("announcements/my-announcements")
-    Call<AnnouncementFeedResponse> getMyAnnouncements();
-
     @GET("history/my-history")
     Call<List<History>> getMyHistory();
 

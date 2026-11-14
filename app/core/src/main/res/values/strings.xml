@@ -9,13 +9,6 @@
     <string name="dashboard_title">Dashboard</string>
     <string name="dashboard_subtitle">Help keep your community clean and healthy!</string>
 
-    <!-- Announcements -->
-    <string name="announcements">Announcements</string>
-    <string name="announcement_none_yet">No announcements yet.</string>
-    <string name="announcement_untitled">Untitled announcement</string>
-    <string name="announcement_no_body">No further details were provided.</string>
-    <string name="announcement_view_all">View all →</string>
-
     <!-- Report details dialog -->
     <string name="report_detail_assignment_pending">A cleanup crew has been assigned to your report.</string>
     <string name="report_detail_assignment_done">The cleanup crew has finished this report.</string>

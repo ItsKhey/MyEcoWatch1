@@ -40,11 +40,11 @@ public class NotificationSettingsFragment extends Fragment {
     private ExecutorService executor;
     private NotificationSetting settings;
 
-    private MaterialSwitch switchAllowNotifications, switchReportStatus, switchReportCompleted, switchReportDenied, 
-                           switchAnnouncements, switchSound, switchVibration;
+    private MaterialSwitch switchAllowNotifications, switchReportStatus, switchReportCompleted, switchReportDenied,
+                           switchSound, switchVibration;
     private View settingsContentLayout;
-    private View rowAllowNotifications, rowReportStatus, rowReportCompleted, rowReportDenied, 
-                 rowAnnouncements, rowSound, rowVibration;
+    private View rowAllowNotifications, rowReportStatus, rowReportCompleted, rowReportDenied,
+                 rowSound, rowVibration;
 
     private final ActivityResultLauncher<Intent> soundPickerLauncher = registerForActivityResult(
             new ActivityResultContracts.StartActivityForResult(),
@@ -101,10 +101,6 @@ public class NotificationSettingsFragment extends Fragment {
         switchReportDenied = rowReportDenied.findViewById(R.id.rowSwitch);
         setupRowUI(rowReportDenied, R.drawable.trashic, "Report Denied", "Notify me when a report is denied.");
 
-        rowAnnouncements = view.findViewById(R.id.itemAnnouncements);
-        switchAnnouncements = rowAnnouncements.findViewById(R.id.rowSwitch);
-        setupRowUI(rowAnnouncements, R.drawable.logo1, "CENRO Announcements", "Receive environmental announcements and important updates.");
-
         rowSound = view.findViewById(R.id.itemSound);
         switchSound = rowSound.findViewById(R.id.rowSwitch);
         setupRowUI(rowSound, android.R.drawable.ic_lock_silent_mode_off, "Notification Sound", "Play a sound for new notifications.");
@@ -158,7 +154,6 @@ public class NotificationSettingsFragment extends Fragment {
         rowReportStatus.setOnClickListener(v -> switchReportStatus.toggle());
         rowReportCompleted.setOnClickListener(v -> switchReportCompleted.toggle());
         rowReportDenied.setOnClickListener(v -> switchReportDenied.toggle());
-        rowAnnouncements.setOnClickListener(v -> switchAnnouncements.toggle());
         rowSound.setOnClickListener(v -> switchSound.toggle());
         rowVibration.setOnClickListener(v -> switchVibration.toggle());
 
@@ -179,11 +174,6 @@ public class NotificationSettingsFragment extends Fragment {
             updateSettingsFromUI();
             saveSettings();
             preferenceRepository.pushReportDenied(switchReportDenied.isChecked());
-        });
-        switchAnnouncements.setOnClickListener(v -> {
-            updateSettingsFromUI();
-            saveSettings();
-            preferenceRepository.pushCenroAnnouncements(switchAnnouncements.isChecked());
         });
         switchSound.setOnClickListener(v -> {
             updateSettingsFromUI();
@@ -253,7 +243,6 @@ public class NotificationSettingsFragment extends Fragment {
         switchReportStatus.setChecked(settings.isReportStatusUpdates());
         switchReportCompleted.setChecked(settings.isReportCompleted());
         switchReportDenied.setChecked(settings.isReportDenied());
-        switchAnnouncements.setChecked(settings.isCenroAnnouncements());
         switchSound.setChecked(settings.isSoundEnabled());
         switchVibration.setChecked(settings.isVibrationEnabled());
     }
@@ -264,7 +253,6 @@ public class NotificationSettingsFragment extends Fragment {
         settings.setReportStatusUpdates(switchReportStatus.isChecked());
         settings.setReportCompleted(switchReportCompleted.isChecked());
         settings.setReportDenied(switchReportDenied.isChecked());
-        settings.setCenroAnnouncements(switchAnnouncements.isChecked());
         settings.setSoundEnabled(switchSound.isChecked());
         settings.setVibrationEnabled(switchVibration.isChecked());
     }

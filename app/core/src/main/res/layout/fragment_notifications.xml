@@ -110,18 +110,6 @@
                 android:clickable="true"
                 android:focusable="true" />
 
-            <TextView
-                android:id="@+id/tabFromAdmin"
-                android:layout_width="50dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:gravity="center"
-                android:text="From Admin (0)"
-                android:textColor="@color/green"
-                android:textStyle="bold"
-                android:clickable="true"
-                android:focusable="true" />
-
             <View
                 android:layout_width="3dp"
                 android:layout_height="24dp"

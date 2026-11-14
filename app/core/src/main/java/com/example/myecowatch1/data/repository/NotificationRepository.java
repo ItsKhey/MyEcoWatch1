@@ -28,7 +28,6 @@ import com.example.myecowatch1.utils.SessionManager;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Date;
@@ -49,30 +48,6 @@ import retrofit2.Response;
 public final class NotificationRepository {
     public static final String CHANNEL_ID = "ecowatch_notifications";
 
-    /** Backend notification type for a published CENRO announcement. */
-    public static final String ANNOUNCEMENT_TYPE = "ANNOUNCEMENT";
-
-    /**
-     * Types the "From Admin" tab collects.
-     *
-     * <p>ANNOUNCEMENT belongs here: it is a CENRO broadcast, so leaving it out
-     * would make the notice show under "All" while silently vanishing from the
-     * tab a resident actually reads for official news.
-     */
-    private static final List<String> ADMIN_TYPES = Collections.unmodifiableList(Arrays.asList(
-            "ADMIN",
-            "PERSONNEL_ASSIGNED",
-            "PERSONNEL_UNASSIGNED",
-            "CLEANING_STARTED",
-            "ADMIN_RESPONSE_UPDATED",
-            "REPORT_DENIED",
-            // Duplicate review: the resident's report matched one that already
-            // existed for the same location.
-            "REPORT_DUPLICATE",
-            "REPORT_COMPLETED",
-            "REPORT_UPDATE",
-            "ANNOUNCEMENT"
-    ));
     private static final ExecutorService EXECUTOR = Executors.newFixedThreadPool(2);
     private static volatile NotificationRepository instance;
 
@@ -103,10 +78,6 @@ public final class NotificationRepository {
 
     public LiveData<List<Notification>> getAllNotifications() {
         return notificationDao.getAllNotifications(currentResidentId());
-    }
-
-    public LiveData<List<Notification>> getAdminNotifications() {
-        return notificationDao.getAdminNotifications(currentResidentId(), ADMIN_TYPES);
     }
 
     public LiveData<List<Notification>> getTrashNotifications() {
@@ -445,10 +416,6 @@ public final class NotificationRepository {
         return value == 0 ? 1 : value;
     }
 
-    public static boolean isAdminNotificationType(@Nullable String type) {
-        return type != null && ADMIN_TYPES.contains(type.trim().toUpperCase());
-    }
-
     @SuppressLint("MissingPermission")
     private void showSystemNotification(Notification notification) {
         if (ContextCompat.checkSelfPermission(
@@ -459,17 +426,12 @@ public final class NotificationRepository {
         }
 
         // The destination is derived from the stored type rather than carried in
-        // the push payload. A resident can also arrive here through the REST
-        // sync, which has no payload to read a target from, and an announcement
-        // owns no report id to route on. Deriving it from type means the tap
-        // lands on the announcement either way it was delivered.
-        boolean announcement = ANNOUNCEMENT_TYPE.equalsIgnoreCase(
-                notification.getType() == null ? "" : notification.getType().trim());
+        // the push payload, so the tap routes the same way whether the row
+        // arrived through FCM or the REST sync.
         Intent intent = NotificationRouting.openNotification(
                 application,
                 notification.getMongoId(),
-                notification.getReportId(),
-                announcement);
+                notification.getReportId());
 
         PendingIntent pendingIntent = PendingIntent.getActivity(
                 application,
@@ -483,7 +445,7 @@ public final class NotificationRepository {
                 .setContentTitle(notification.getTitle() == null
                         ? "EcoWatch" : notification.getTitle())
                 .setContentText(notification.getMessage() == null
-                        ? "Your CENRO notice was published." : notification.getMessage())
+                        ? "Tap to view details." : notification.getMessage())
                 .setPriority(NotificationCompat.PRIORITY_HIGH)
                 .setCategory(NotificationCompat.CATEGORY_EVENT)
                 .setAutoCancel(true)

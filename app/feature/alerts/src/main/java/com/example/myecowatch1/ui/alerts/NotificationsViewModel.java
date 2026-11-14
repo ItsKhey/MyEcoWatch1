@@ -14,7 +14,6 @@ import java.util.List;
 public class NotificationsViewModel extends AndroidViewModel {
     private final NotificationRepository repository;
     private final LiveData<List<Notification>> allNotifications;
-    private final LiveData<List<Notification>> adminNotifications;
     private final LiveData<List<Notification>> trashNotifications;
     private final LiveData<Integer> unreadCount;
     private final LiveData<Boolean> loading;
@@ -24,7 +23,6 @@ public class NotificationsViewModel extends AndroidViewModel {
         super(application);
         repository = NotificationRepository.getInstance(application);
         allNotifications = repository.getAllNotifications();
-        adminNotifications = repository.getAdminNotifications();
         trashNotifications = repository.getTrashNotifications();
         unreadCount = repository.getUnreadCount();
         loading = repository.getLoading();
@@ -32,7 +30,6 @@ public class NotificationsViewModel extends AndroidViewModel {
     }
 
     public LiveData<List<Notification>> getAllNotifications() { return allNotifications; }
-    public LiveData<List<Notification>> getAdminNotifications() { return adminNotifications; }
     public LiveData<List<Notification>> getTrashNotifications() { return trashNotifications; }
     public LiveData<Integer> getUnreadCount() { return unreadCount; }
     public LiveData<Boolean> getLoading() { return loading; }

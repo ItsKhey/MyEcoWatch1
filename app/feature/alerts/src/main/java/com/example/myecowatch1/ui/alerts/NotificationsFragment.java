@@ -25,7 +25,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import com.example.myecowatch1.core.R;
 import com.example.myecowatch1.data.models.Notification;
-import com.example.myecowatch1.data.repository.NotificationRepository;
 import com.example.myecowatch1.navigation.DashboardNavigation;
 import com.example.myecowatch1.utils.NotificationDateFormatter;
 import com.google.android.material.button.MaterialButton;
@@ -43,7 +42,7 @@ public class NotificationsFragment extends Fragment {
     private NotificationsAdapter adapter;
     private SwipeRefreshLayout swipeRefreshLayout;
     private RecyclerView recyclerView;
-    private TextView tabAll, tabFromAdmin, tabTrash;
+    private TextView tabAll, tabTrash;
     private EditText searchEditText;
     private ImageView filterBtn, selectModeBtn;
     private LinearLayout selectionControlLayout, bulkActionsBar;
@@ -82,7 +81,6 @@ public class NotificationsFragment extends Fragment {
         swipeRefreshLayout = v.findViewById(R.id.swipeRefreshLayout);
         recyclerView = v.findViewById(R.id.notificationsRecyclerView);
         tabAll = v.findViewById(R.id.tabAll);
-        tabFromAdmin = v.findViewById(R.id.tabFromAdmin);
         tabTrash = v.findViewById(R.id.tabTrash);
         searchEditText = v.findViewById(R.id.searchEditText);
         filterBtn = v.findViewById(R.id.filterBtn);
@@ -132,12 +130,6 @@ public class NotificationsFragment extends Fragment {
                         ((DashboardNavigation) getActivity()).openReportById(
                                 notification.getReportId()
                         );
-                    } else if (NotificationRepository.ANNOUNCEMENT_TYPE.equalsIgnoreCase(
-                            notification.getType() == null
-                                    ? "" : notification.getType().trim())) {
-                        // An announcement owns no report, so tapping one from the
-                        // Alerts list opens the announcement itself.
-                        ((DashboardNavigation) getActivity()).openAnnouncementFeed();
                     }
                 }
             }
@@ -207,7 +199,6 @@ public class NotificationsFragment extends Fragment {
 
     private void setupTabs() {
         tabAll.setOnClickListener(v -> selectTab("All"));
-        tabFromAdmin.setOnClickListener(v -> selectTab("Admin"));
         tabTrash.setOnClickListener(v -> selectTab("Trash"));
     }
 
@@ -221,8 +212,6 @@ public class NotificationsFragment extends Fragment {
     private void updateTabUI() {
         tabAll.setBackgroundResource("All".equals(currentTab) ? R.drawable.active_pill_background : 0);
         tabAll.setTextColor(getResources().getColor("All".equals(currentTab) ? R.color.white : R.color.green, null));
-        tabFromAdmin.setBackgroundResource("Admin".equals(currentTab) ? R.drawable.active_pill_background : 0);
-        tabFromAdmin.setTextColor(getResources().getColor("Admin".equals(currentTab) ? R.color.white : R.color.green, null));
         tabTrash.setBackgroundResource("Trash".equals(currentTab) ? R.drawable.active_pill_background : 0);
         tabTrash.setTextColor(getResources().getColor("Trash".equals(currentTab) ? R.color.white : R.color.green, null));
     }
@@ -237,7 +226,6 @@ public class NotificationsFragment extends Fragment {
 
     private void observeViewModel() {
         viewModel.getAllNotifications().observe(getViewLifecycleOwner(), list -> { if ("All".equals(currentTab)) handleUpdate(list); tabAll.setText("All ("+(list!=null?list.size():0)+")"); });
-        viewModel.getAdminNotifications().observe(getViewLifecycleOwner(), list -> { if ("Admin".equals(currentTab)) handleUpdate(list); tabFromAdmin.setText("From Admin ("+(list!=null?list.size():0)+")"); });
         viewModel.getTrashNotifications().observe(getViewLifecycleOwner(), list -> { if ("Trash".equals(currentTab)) handleUpdate(list); tabTrash.setText("Trash ("+(list!=null?list.size():0)+")"); });
         viewModel.getLoading().observe(getViewLifecycleOwner(), loading -> {
             if (swipeRefreshLayout != null) swipeRefreshLayout.setRefreshing(Boolean.TRUE.equals(loading));
@@ -251,7 +239,6 @@ public class NotificationsFragment extends Fragment {
 
     private void loadData() {
         if ("All".equals(currentTab)) handleUpdate(viewModel.getAllNotifications().getValue());
-        else if ("Admin".equals(currentTab)) handleUpdate(viewModel.getAdminNotifications().getValue());
         else handleUpdate(viewModel.getTrashNotifications().getValue());
     }
 

@@ -15,12 +15,6 @@ public interface DashboardNavigation {
     /** Selects the reports tab. */
     void navigateToReports();
 
-    /** Pushes the announcement feed onto the dashboard's fragment container. */
-    void navigateToAnnouncements();
-
-    /** Refreshes the announcement feed, then opens it. */
-    void openAnnouncementFeed();
-
     /** Selects the reports tab and opens the given report. */
     void openReportById(String reportId);
 

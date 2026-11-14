@@ -105,6 +105,7 @@ dependencies {
     // AppDatabase extends RoomDatabase, so the type has to be visible to any
     // module that calls a DAO accessor on it.
     api(libs.room.runtime)
+    implementation(libs.material)
     implementation(libs.room.ktx)
     annotationProcessor(libs.room.compiler)
 

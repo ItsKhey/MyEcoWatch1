@@ -13,12 +13,9 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.example.myecowatch1.core.R;
-import com.example.myecowatch1.data.models.Announcement;
 import com.example.myecowatch1.data.models.Report;
-import com.example.myecowatch1.data.repository.AnnouncementRepository;
 import com.example.myecowatch1.data.repository.AuthRepository;
 import com.example.myecowatch1.ui.reports.ReportsViewModel;
-import com.example.myecowatch1.utils.NotificationDateFormatter;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -32,18 +29,11 @@ import java.util.TimeZone;
 
 public class HomeFragment extends Fragment {
 
-    /** The dashboard preview shows at most this many announcements. */
-    private static final int MAX_ANNOUNCEMENT_PREVIEW = 3;
-
     private SwipeRefreshLayout swipeRefreshLayout;
     private ReportsViewModel reportsViewModel;
     private AuthRepository authRepository;
-    private AnnouncementRepository announcementRepository;
     private TextView pendingCount, completedCount, deniedCount, overallCount;
     private LinearLayout recentActivityList;
-    private LinearLayout announcementList;
-    private TextView announcementEmptyText;
-    private View btnReadMore;
 
     @Nullable
     @Override
@@ -56,9 +46,6 @@ public class HomeFragment extends Fragment {
         deniedCount = view.findViewById(R.id.deniedCount);
         overallCount = view.findViewById(R.id.overallCount);
         recentActivityList = view.findViewById(R.id.recentActivityList);
-        announcementList = view.findViewById(R.id.announcementList);
-        announcementEmptyText = view.findViewById(R.id.announcementEmptyText);
-        btnReadMore = view.findViewById(R.id.btnReadMore);
 
         view.findViewById(R.id.btnViewAll).setOnClickListener(v -> {
             if (getActivity() instanceof DashboardActivity) {
@@ -68,35 +55,18 @@ public class HomeFragment extends Fragment {
 
         reportsViewModel = new ViewModelProvider(this).get(ReportsViewModel.class);
         authRepository = new AuthRepository(requireActivity().getApplication());
-        announcementRepository =
-                new AnnouncementRepository(requireActivity().getApplication());
 
         reportsViewModel.getAllReports().observe(getViewLifecycleOwner(), this::updateUI);
-        announcementRepository.getAnnouncements()
-                .observe(getViewLifecycleOwner(), this::updateAnnouncements);
-
-        if (btnReadMore != null) {
-            btnReadMore.setOnClickListener(v -> {
-                if (!isAdded() || !(getActivity() instanceof DashboardActivity)) return;
-                ((DashboardActivity) getActivity()).navigateToAnnouncements();
-            });
-        }
 
         swipeRefreshLayout.setOnRefreshListener(() -> {
             reportsViewModel.refreshReports();
             authRepository.fetchMe(null);
-            // The announcement feed refreshes independently, so the spinner
-            // only stops once the real work settles.
-            announcementRepository.fetchAnnouncements(() -> {
-                if (swipeRefreshLayout != null) swipeRefreshLayout.setRefreshing(false);
-            });
             swipeRefreshLayout.postDelayed(() -> {
                 if (swipeRefreshLayout != null) swipeRefreshLayout.setRefreshing(false);
             }, 3000);
         });
 
         reportsViewModel.refreshReports();
-        announcementRepository.fetchAnnouncements();
 
         return view;
     }
@@ -104,69 +74,6 @@ public class HomeFragment extends Fragment {
     private void updateUI(List<Report> reports) {
         updateStats(reports);
         updateRecentActivity(reports);
-    }
-
-    /**
-     * Fills the Announcements card from the resident's real announcement feed.
-     *
-     * <p>Shows the newest few entries, newest first. When CENRO has published
-     * nothing the card says so explicitly instead of showing sample text.
-     */
-    private void updateAnnouncements(List<Announcement> announcements) {
-        if (announcementList == null) return;
-        announcementList.removeAllViews();
-
-        int total = announcements == null ? 0 : announcements.size();
-
-        // The empty state lives inside the card, so the card always stays
-        // visible and only the message is toggled.
-        if (announcementEmptyText != null) {
-            announcementEmptyText.setVisibility(total == 0 ? View.VISIBLE : View.GONE);
-        }
-        if (btnReadMore != null) {
-            btnReadMore.setVisibility(total > 0 ? View.VISIBLE : View.GONE);
-        }
-        if (total == 0) return;
-
-        int count = Math.min(total, MAX_ANNOUNCEMENT_PREVIEW);
-        for (int i = 0; i < count; i++) {
-            addAnnouncementItem(announcements.get(i), i == count - 1);
-        }
-    }
-
-    private void addAnnouncementItem(Announcement announcement, boolean isLast) {
-        if (announcement == null) return;
-
-        View itemView = getLayoutInflater()
-                .inflate(R.layout.item_announcement, announcementList, false);
-
-        TextView titleView = itemView.findViewById(R.id.announcementItemTitle);
-        TextView bodyView = itemView.findViewById(R.id.announcementItemBody);
-        TextView timeView = itemView.findViewById(R.id.announcementItemTime);
-        TextView badgeView = itemView.findViewById(R.id.announcementPriorityBadge);
-        View divider = itemView.findViewById(R.id.announcementItemDivider);
-
-        String title = announcement.getTitle();
-        titleView.setText(title != null && !title.trim().isEmpty()
-                ? title
-                : getString(R.string.announcement_untitled));
-
-        String message = announcement.getMessage();
-        bodyView.setText(message != null && !message.trim().isEmpty()
-                ? message
-                : getString(R.string.announcement_no_body));
-
-        timeView.setText(NotificationDateFormatter.formatRelative(announcement.getCreatedAt()));
-
-        badgeView.setVisibility(announcement.isImportant() ? View.VISIBLE : View.GONE);
-        if (divider != null) divider.setVisibility(isLast ? View.GONE : View.VISIBLE);
-
-        itemView.setOnClickListener(v -> {
-            if (!isAdded() || !(getActivity() instanceof DashboardActivity)) return;
-            ((DashboardActivity) getActivity()).navigateToAnnouncements();
-        });
-
-        announcementList.addView(itemView);
     }
 
     private void updateStats(List<Report> reports) {
@@ -239,7 +146,6 @@ public class HomeFragment extends Fragment {
 
     private void addActivityItem(Report report) {
         View itemView = getLayoutInflater().inflate(R.layout.item_recent_activity, recentActivityList, false);
-        TextView statusIcon = itemView.findViewById(R.id.activityStatusIcon);
         TextView titleTv = itemView.findViewById(R.id.activityTitle);
         TextView descTv = itemView.findViewById(R.id.activityDescription);
         TextView timeTv = itemView.findViewById(R.id.activityTime);
@@ -258,7 +164,6 @@ public class HomeFragment extends Fragment {
             icon = "✕";
         }
 
-        statusIcon.setText(icon);
         titleTv.setText(title);
         descTv.setText(report.getTitle() + " report was " + status.toLowerCase() + ".");
         timeTv.setText(formatDateTime(report.getCreatedAt()));

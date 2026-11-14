@@ -55,7 +55,7 @@ public final class NotificationDateFormatter {
 
     /**
      * Compact "Today · 10:42 AM" / "Mar 3 · 8:15 AM" label used by the
-     * announcement feed. Falls back to the absolute format when the timestamp
+     * notification list. Falls back to the absolute format when the timestamp
      * cannot be parsed, and to a dash when there is nothing to show.
      */
     public static String formatRelative(@Nullable String raw) {

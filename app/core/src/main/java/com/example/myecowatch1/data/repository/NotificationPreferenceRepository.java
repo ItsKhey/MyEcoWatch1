@@ -104,7 +104,6 @@ public class NotificationPreferenceRepository {
             settings.setReportStatusUpdates(remote.isReportStatusUpdates());
             settings.setReportCompleted(remote.isReportCompleted());
             settings.setReportDenied(remote.isReportDenied());
-            settings.setCenroAnnouncements(remote.isCenroAnnouncements());
             settings.setSecurityAlerts(remote.isSecurityAlerts());
             settings.setSoundEnabled(remote.isSoundEnabled());
             settings.setVibrationEnabled(remote.isVibrationEnabled());
@@ -116,10 +115,6 @@ public class NotificationPreferenceRepository {
     }
 
     /** Pushes a single changed toggle so the server can act on it. */
-    public void pushCenroAnnouncements(boolean enabled) {
-        push(NotificationPreferencesRequest.forCenroAnnouncements(enabled));
-    }
-
     public void pushMasterEnabled(boolean enabled) {
         push(NotificationPreferencesRequest.forMasterEnabled(enabled));
     }

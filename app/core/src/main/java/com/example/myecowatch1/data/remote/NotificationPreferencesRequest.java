@@ -23,9 +23,6 @@ public class NotificationPreferencesRequest {
     @SerializedName("reportDenied")
     private Boolean reportDenied;
 
-    @SerializedName("cenroAnnouncements")
-    private Boolean cenroAnnouncements;
-
     @SerializedName("securityAlerts")
     private Boolean securityAlerts;
 
@@ -42,12 +39,6 @@ public class NotificationPreferencesRequest {
     }
 
     /** Builds a request carrying a single changed toggle. */
-    public static NotificationPreferencesRequest forCenroAnnouncements(boolean enabled) {
-        NotificationPreferencesRequest request = new NotificationPreferencesRequest();
-        request.cenroAnnouncements = enabled;
-        return request;
-    }
-
     public static NotificationPreferencesRequest forMasterEnabled(boolean enabled) {
         NotificationPreferencesRequest request = new NotificationPreferencesRequest();
         request.masterEnabled = enabled;

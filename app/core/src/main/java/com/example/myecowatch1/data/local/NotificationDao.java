@@ -39,9 +39,6 @@ public interface NotificationDao {
     @Query("SELECT * FROM notifications WHERE residentId = :residentId AND isDeleted = 0 ORDER BY createdAt DESC")
     LiveData<List<Notification>> getAllNotifications(String residentId);
 
-    @Query("SELECT * FROM notifications WHERE residentId = :residentId AND isDeleted = 0 AND type IN (:adminTypes) ORDER BY createdAt DESC")
-    LiveData<List<Notification>> getAdminNotifications(String residentId, List<String> adminTypes);
-
     @Query("SELECT * FROM notifications WHERE residentId = :residentId AND isDeleted = 1 ORDER BY COALESCE(deletedAt, createdAt) DESC")
     LiveData<List<Notification>> getTrashNotifications(String residentId);
 

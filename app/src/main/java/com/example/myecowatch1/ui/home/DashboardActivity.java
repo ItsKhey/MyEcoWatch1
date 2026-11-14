@@ -25,11 +25,9 @@ import com.bumptech.glide.Glide;
 import com.example.myecowatch1.core.R;
 import com.example.myecowatch1.data.models.User;
 import com.example.myecowatch1.data.remote.ServerConfig;
-import com.example.myecowatch1.data.repository.AnnouncementRepository;
 import com.example.myecowatch1.data.repository.AuthRepository;
 import com.example.myecowatch1.navigation.DashboardNavigation;
 import com.example.myecowatch1.navigation.NotificationRouting;
-import com.example.myecowatch1.ui.alerts.AnnouncementsFragment;
 import com.example.myecowatch1.ui.alerts.NotificationsFragment;
 import com.example.myecowatch1.ui.auth.LoginActivity;
 import com.example.myecowatch1.ui.profile.ProfileFragment;
@@ -45,17 +43,6 @@ public class DashboardActivity extends AppCompatActivity implements DashboardNav
             NotificationRouting.EXTRA_NOTIFICATION_ID;
     public static final String EXTRA_REPORT_ID = NotificationRouting.EXTRA_REPORT_ID;
 
-    /**
-     * Payload value that sends a tapped notification to the Announcements screen.
-     * Sent by the backend alongside ANNOUNCEMENT broadcasts, which own no
-     * report and so cannot be routed by report id.
-     */
-    public static final String TARGET_SCREEN_ANNOUNCEMENTS =
-            NotificationRouting.TARGET_SCREEN_ANNOUNCEMENTS;
-
-    /** Intent extra carrying {@link #TARGET_SCREEN_ANNOUNCEMENTS}. */
-    public static final String EXTRA_TARGET_SCREEN = NotificationRouting.EXTRA_TARGET_SCREEN;
-
     private LinearLayout itemHome, itemInbox, itemCreate, itemNotifications, itemProfile;
     private ImageView iconHome, iconInbox, iconCreate, iconNotifications, iconProfile, pfpImage, backgroundImage;
     private TextView labelHome, labelInbox, labelCreate, labelNotifications, labelProfile;
@@ -63,7 +50,6 @@ public class DashboardActivity extends AppCompatActivity implements DashboardNav
     private SessionManager sessionManager;
     private AuthRepository authRepository;
     private com.example.myecowatch1.data.repository.NotificationRepository notificationRepository;
-    private AnnouncementRepository announcementRepository;
     private android.os.Handler pollerHandler = new android.os.Handler(android.os.Looper.getMainLooper());
     private Runnable pollerRunnable = new Runnable() {
         @Override
@@ -137,9 +123,6 @@ public class DashboardActivity extends AppCompatActivity implements DashboardNav
         notificationRepository =
                 com.example.myecowatch1.data.repository.NotificationRepository
                         .getInstance(getApplication());
-        // Used to refresh the feed when a tapped announcement notification
-        // routes into the Announcements screen.
-        announcementRepository = new AnnouncementRepository(getApplication());
         notificationRepository.getUnreadCount().observe(this, count -> {
             int unread = count == null ? 0 : Math.max(0, count);
             notificationBadge.setText(unread > 99 ? "99+" : String.valueOf(unread));
@@ -172,7 +155,6 @@ public class DashboardActivity extends AppCompatActivity implements DashboardNav
         if (notificationId == null) notificationId = intent.getStringExtra("notificationId");
         String reportId = intent.getStringExtra(EXTRA_REPORT_ID);
         if (reportId == null) reportId = intent.getStringExtra("reportId");
-        String targetScreen = intent.getStringExtra(EXTRA_TARGET_SCREEN);
         boolean notificationAction = ACTION_OPEN_NOTIFICATION.equals(intent.getAction())
                 || "OPEN_ECOWATCH_NOTIFICATION".equals(intent.getAction())
                 || notificationId != null
@@ -185,10 +167,6 @@ public class DashboardActivity extends AppCompatActivity implements DashboardNav
 
         if (reportId != null && !reportId.trim().isEmpty()) {
             openReportById(reportId);
-        } else if (TARGET_SCREEN_ANNOUNCEMENTS.equals(targetScreen)) {
-            // A broadcast owns no report, so without this the tap would fall
-            // through to the Alerts list instead of the announcement itself.
-            openAnnouncementFeed();
         } else {
             itemNotifications.performClick();
         }
@@ -197,7 +175,6 @@ public class DashboardActivity extends AppCompatActivity implements DashboardNav
         intent.removeExtra("notificationId");
         intent.removeExtra(EXTRA_REPORT_ID);
         intent.removeExtra("reportId");
-        intent.removeExtra("targetScreen");
         intent.setAction(Intent.ACTION_MAIN);
     }
 
@@ -293,28 +270,6 @@ public class DashboardActivity extends AppCompatActivity implements DashboardNav
         if (itemInbox != null) {
             itemInbox.performClick();
         }
-    }
-
-    /**
-     * Opens the resident announcement feed. Backs the "View all" action on the
-     * dashboard Announcements card.
-     */
-    public void navigateToAnnouncements() {
-        getSupportFragmentManager().beginTransaction()
-                .replace(R.id.fragmentContainer, new AnnouncementsFragment())
-                .addToBackStack(null)
-                .commit();
-    }
-
-    /**
-     * Opens the announcement feed, refreshing it first so the announcement a
-     * resident just tapped is actually there to read.
-     */
-    public void openAnnouncementFeed() {
-        if (announcementRepository != null) {
-            announcementRepository.fetchAnnouncements();
-        }
-        navigateToAnnouncements();
     }
 
     public void openReportById(String reportId) {
